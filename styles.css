@@ -1,0 +1,571 @@
+    :root {
+      --verde: #006b3f;
+      --verde-claro: #00a85a;
+      --branco: #ffffff;
+      --cinza: #f3f5f4;
+      --escuro: #102019;
+      --dourado: #d6b25e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #003b25, #007344);
+      color: var(--branco);
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 32px 20px 20px;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 24px auto;
+      max-width: 900px;
+      padding: 0 20px;
+    }
+
+    .stat {
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 18px;
+      padding: 14px 20px;
+      min-width: 150px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 22px;
+      color: var(--dourado);
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--branco);
+      color: var(--escuro);
+      border-radius: 26px;
+      padding: 24px;
+      min-height: 245px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 14px 35px rgba(0,0,0,0.22);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 3px solid transparent;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.32);
+      border-color: var(--dourado);
+    }
+
+    .icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+
+    .card h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      color: var(--verde);
+    }
+
+    .card p {
+      font-size: 15px;
+      line-height: 1.45;
+      margin-bottom: 18px;
+    }
+
+    .reward {
+      background: var(--cinza);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
+
+    .status {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 14px;
+    }
+
+    button {
+      border: none;
+      background: var(--verde);
+      color: var(--branco);
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background: var(--verde-claro);
+    }
+
+    .bafinho {
+      margin: 28px 0 42px;
+      background: #071b12;
+      border: 2px solid var(--dourado);
+      border-radius: 28px;
+      padding: 28px;
+      text-align: center;
+    }
+
+    .bafinho h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .bafinho p {
+      opacity: 0.88;
+      margin-bottom: 18px;
+    }
+
+    .bafinho button {
+      max-width: 280px;
+      background: var(--dourado);
+      color: #102019;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 620px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .logo {
+        font-size: 28px;
+      }
+    }
+
+    .album-page {
+      --verde-escuro: #0e3b2a;
+      --verde: #1f6a48;
+      --verde-claro: #2b8f61;
+      --creme: #f4ecd8;
+      --papel: #fbf6eb;
+      --dourado: #c7a34a;
+      --dourado-escuro: #8c6d24;
+      --tinta: #1d261f;
+      --sombra: rgba(10, 24, 18, 0.22);
+      --slot-w: 109px;
+      --slot-h: 145px;
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--tinta);
+      background:
+        radial-gradient(circle at top, rgba(255, 235, 189, 0.2), transparent 22%),
+        linear-gradient(180deg, #0a2419 0%, #13472f 54%, #1b5b3c 100%);
+      padding: 24px;
+    }
+
+    .album-page .album-shell {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .album-page .hero {
+      background: linear-gradient(135deg, rgba(255, 248, 227, 0.96), rgba(244, 236, 216, 0.92));
+      border: 3px solid rgba(199, 163, 74, 0.65);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 20px 50px var(--sombra);
+      margin-bottom: 24px;
+    }
+
+    .album-page .eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 0.24rem;
+      text-transform: uppercase;
+      color: var(--dourado-escuro);
+      margin-bottom: 10px;
+    }
+
+    .album-page .eyebrow a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .album-page h1 {
+      font-size: clamp(2.2rem, 5vw, 4.2rem);
+      line-height: 0.95;
+      color: var(--verde-escuro);
+      margin-bottom: 12px;
+    }
+
+    .album-page .hero p {
+      max-width: 760px;
+      font-size: 1.02rem;
+      line-height: 1.6;
+    }
+
+    .album-page .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .album-page .nav a {
+      text-decoration: none;
+      color: var(--papel);
+      background: linear-gradient(180deg, var(--verde-claro), var(--verde));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 20px rgba(18, 43, 31, 0.18);
+    }
+
+    .album-page .pages {
+      display: grid;
+      gap: 24px;
+    }
+
+    .album-page .page {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 20%),
+        var(--papel);
+      border-radius: 30px;
+      padding: 28px;
+      border: 4px solid var(--dourado);
+      box-shadow: 0 22px 50px var(--sombra);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .album-page .page::before {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px dashed rgba(140, 109, 36, 0.45);
+      border-radius: 22px;
+      pointer-events: none;
+    }
+
+    .album-page .page-head {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid rgba(31, 106, 72, 0.18);
+    }
+
+    .album-page .page-title {
+      font-size: clamp(1.7rem, 4vw, 2.7rem);
+      color: var(--verde-escuro);
+    }
+
+    .album-page .page-subtitle {
+      color: rgba(29, 38, 31, 0.7);
+      font-size: 0.98rem;
+      max-width: 520px;
+      text-align: right;
+    }
+
+    .album-page .slots {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 18px;
+    }
+
+    .album-page .slots.cover {
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+    }
+
+    .album-page .slots.defenders {
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    }
+
+    .album-page .slots.midfielders,
+    .album-page .slots.forwards {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .album-page .slot {
+      background: rgba(255, 252, 245, 0.94);
+      border: 2px solid rgba(31, 106, 72, 0.2);
+      border-radius: 22px;
+      padding: 18px;
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      box-shadow: inset 0 0 0 1px rgba(199, 163, 74, 0.16);
+    }
+
+    .album-page .slot-actionable {
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .album-page .slot-actionable:hover,
+    .album-page .slot-actionable:focus-visible {
+      transform: translateY(-3px);
+      border-color: rgba(31, 106, 72, 0.45);
+      box-shadow:
+        inset 0 0 0 1px rgba(199, 163, 74, 0.16),
+        0 14px 28px rgba(18, 43, 31, 0.14);
+      outline: none;
+    }
+
+    .album-page .slot.completed {
+      cursor: default;
+    }
+
+    .album-page .sticker-frame {
+      width: var(--slot-w);
+      height: var(--slot-h);
+      border-radius: 16px;
+      border: 2px dashed rgba(140, 109, 36, 0.55);
+      background:
+        linear-gradient(180deg, rgba(209, 191, 144, 0.2), rgba(255, 255, 255, 0.6)),
+        repeating-linear-gradient(
+          -45deg,
+          rgba(199, 163, 74, 0.08),
+          rgba(199, 163, 74, 0.08) 10px,
+          transparent 10px,
+          transparent 20px
+        );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .album-page .sticker-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .album-page .slot.empty .sticker-frame::after {
+      content: "Cole aqui";
+      font-size: 0.85rem;
+      letter-spacing: 0.08rem;
+      text-transform: uppercase;
+      color: rgba(29, 38, 31, 0.56);
+    }
+
+    .album-page .slot-name {
+      margin-top: 14px;
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--verde-escuro);
+    }
+
+    .album-page .slot-role {
+      margin-top: 6px;
+      font-size: 0.84rem;
+      letter-spacing: 0.12rem;
+      text-transform: uppercase;
+      color: rgba(29, 38, 31, 0.58);
+    }
+
+    .album-page .slot-note {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: rgba(29, 38, 31, 0.72);
+    }
+
+    .album-page .mission-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 50;
+    }
+
+    .album-page .mission-modal.is-open {
+      display: flex;
+    }
+
+    .album-page .mission-modal__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(9, 22, 16, 0.58);
+      backdrop-filter: blur(4px);
+    }
+
+    .album-page .mission-card {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 460px);
+      background: linear-gradient(180deg, #fff9ee 0%, #f4ecd8 100%);
+      border: 3px solid rgba(199, 163, 74, 0.75);
+      border-radius: 24px;
+      padding: 26px;
+      box-shadow: 0 24px 60px rgba(10, 24, 18, 0.34);
+    }
+
+    .album-page .mission-card__close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(31, 106, 72, 0.12);
+      color: var(--verde-escuro);
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .album-page .mission-card__eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.18rem;
+      text-transform: uppercase;
+      color: var(--dourado-escuro);
+      margin-bottom: 10px;
+    }
+
+    .album-page .mission-card h2 {
+      font-size: 1.8rem;
+      line-height: 1;
+      color: var(--verde-escuro);
+      margin-bottom: 12px;
+    }
+
+    .album-page .mission-card__text {
+      font-size: 0.98rem;
+      line-height: 1.5;
+      color: rgba(29, 38, 31, 0.82);
+      margin-bottom: 16px;
+    }
+
+    .album-page .mission-card__input {
+      width: 100%;
+      border: 2px solid rgba(31, 106, 72, 0.2);
+      border-radius: 14px;
+      padding: 14px 16px;
+      font: inherit;
+      color: var(--tinta);
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .album-page .mission-card__feedback {
+      min-height: 24px;
+      margin-top: 12px;
+      color: var(--verde-escuro);
+      font-size: 0.92rem;
+    }
+
+    .album-page .mission-card__submit {
+      width: 100%;
+      margin-top: 8px;
+      border: 0;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font: inherit;
+      font-weight: 700;
+      color: var(--papel);
+      background: linear-gradient(180deg, var(--verde-claro), var(--verde));
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(18, 43, 31, 0.16);
+    }
+
+    @media (max-width: 900px) {
+      .album-page {
+        padding: 16px;
+      }
+
+      .album-page .page,
+      .album-page .hero {
+        padding: 22px;
+      }
+
+      .album-page .page-head {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .album-page .page-subtitle {
+        text-align: left;
+      }
+
+      .album-page .slots.cover {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .album-page {
+        --slot-w: 98px;
+        --slot-h: 131px;
+      }
+
+      .album-page .slot {
+        min-height: 230px;
+      }
+
+      .album-page .nav a {
+        width: 100%;
+        text-align: center;
+      }
+
+      .album-page .mission-card {
+        padding: 22px;
+      }
+
+      .album-page .mission-card h2 {
+        font-size: 1.55rem;
+      }
+    }
