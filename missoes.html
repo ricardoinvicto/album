@@ -72,11 +72,11 @@
         <div>
           <div class="icon">🧠</div>
           <h2>Mesa Tática</h2>
-          <p>Monte a escalação com posse de bola usada pelo Élio contra o Amazonas.</p>
-          <div class="reward">Recompensa: 3 pacotes se acertar</div>
-          <div class="status">Missão muda a cada jogo</div>
+          <p>Monte o time no CT Virtual em 4-4-2 sem posse de bola, compartilhe a escalação e desbloqueie figurinhas no álbum.</p>
+          <div class="reward">Recompensa: 3 figurinhas aleatórias ainda não preenchidas no álbum</div>
+          <div class="status" id="mesa-tatica-status">Missão ativa: compartilhar no esquema 4-4-2 sem posse de bola</div>
         </div>
-        <button>Montar time</button>
+        <button id="mesa-tatica-button" type="button">Montar time</button>
       </article>
 
       <article class="card">
@@ -109,5 +109,22 @@
       <button>Jogar Bafinho</button>
     </section>
   </main>
+  <script>
+    (function () {
+      var button = document.getElementById("mesa-tatica-button");
+      var status = document.getElementById("mesa-tatica-status");
+      var completionKey = "ctvirtual_mesa_tatica_completed";
+
+      if (status && localStorage.getItem(completionKey) === "unlocked") {
+        status.textContent = "Missão concluída: recompensa entregue no álbum";
+      }
+
+      if (button) {
+        button.addEventListener("click", function () {
+          window.location.href = "./ctvirtual/index.html?returnTo=../album.html&mission=mesa-tatica";
+        });
+      }
+    }());
+  </script>
 </body>
 </html>
