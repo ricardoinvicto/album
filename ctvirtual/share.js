@@ -5,7 +5,7 @@
   const mesaTaticaRewardStorageKey = 'ctvirtual_reward_mesa_tatica_pending';
   const mesaTaticaCompletionKey = 'ctvirtual_mesa_tatica_completed';
   const searchParams = new URLSearchParams(window.location.search);
-  const returnTo = searchParams.get('returnTo') || '../album.html';
+  const returnTo = searchParams.get('returnTo') || '../index.html';
   const mission = searchParams.get('mission') || '';
   if (!placedLayer) {
     return;
