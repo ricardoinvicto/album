@@ -182,10 +182,19 @@
     </section>
   </div>
 
+  <div class="victory-overlay" id="victory-overlay" aria-hidden="true">
+    <div class="victory-overlay__card">
+      <img class="victory-overlay__image" id="victory-image" src="" alt="">
+      <div class="victory-overlay__text" id="victory-text"></div>
+      <button class="victory-overlay__button" id="victory-close" type="button">OK</button>
+    </div>
+  </div>
+
   <script>
     (function () {
       const storagePrefix = "album_bugre_";
       const mesaTaticaRewardStorageKey = "ctvirtual_reward_mesa_tatica_pending";
+      const victoryQueueStorageKey = "album_pending_victory_queue";
       const slots = Array.from(document.querySelectorAll(".slot-actionable"));
       const modal = document.getElementById("missao-modal");
       const eyebrow = document.getElementById("missao-eyebrow");
@@ -194,10 +203,46 @@
       const input = document.getElementById("missao-resposta");
       const feedback = document.getElementById("missao-feedback");
       const confirmButton = document.getElementById("missao-confirmar");
+      const victoryOverlay = document.getElementById("victory-overlay");
+      const victoryImage = document.getElementById("victory-image");
+      const victoryText = document.getElementById("victory-text");
+      const victoryClose = document.getElementById("victory-close");
       let activeSlot = null;
+      let isVictoryOpen = false;
 
       function storageKeyFor(slot) {
         return storagePrefix + slot.dataset.stickerId;
+      }
+
+      function readVictoryQueue() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(victoryQueueStorageKey) || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function writeVictoryQueue(queue) {
+        localStorage.setItem(victoryQueueStorageKey, JSON.stringify(queue));
+      }
+
+      function enqueueVictory(stickerId) {
+        if (!stickerId) {
+          return;
+        }
+
+        const queue = readVictoryQueue();
+        if (queue.indexOf(stickerId) === -1) {
+          queue.push(stickerId);
+          writeVictoryQueue(queue);
+        }
+      }
+
+      function findSlotByStickerId(stickerId) {
+        return slots.find(function (slot) {
+          return slot.dataset.stickerId === stickerId;
+        }) || null;
       }
 
       function isExternallyUnlocked(slot) {
@@ -221,6 +266,53 @@
         localStorage.setItem(storageKeyFor(slot), "unlocked");
       }
 
+      function showVictoryOverlay(slot) {
+        if (!slot || !victoryOverlay || !victoryImage || !victoryText) {
+          return;
+        }
+
+        isVictoryOpen = true;
+        victoryImage.src = slot.dataset.image;
+        victoryImage.alt = slot.dataset.alt;
+        victoryText.textContent = "Figurinha conquistada: " + slot.querySelector(".slot-name").textContent;
+        victoryOverlay.style.display = "flex";
+        victoryOverlay.setAttribute("aria-hidden", "false");
+        window.requestAnimationFrame(function () {
+          victoryOverlay.classList.add("is-visible");
+        });
+      }
+
+      function processVictoryQueue() {
+        if (isVictoryOpen) {
+          return;
+        }
+
+        const queue = readVictoryQueue();
+        if (!queue.length) {
+          return;
+        }
+
+        const stickerId = queue.shift();
+        writeVictoryQueue(queue);
+        showVictoryOverlay(findSlotByStickerId(stickerId));
+      }
+
+      function closeVictoryOverlay() {
+        if (!victoryOverlay) {
+          return;
+        }
+
+        victoryOverlay.classList.remove("is-visible");
+        victoryOverlay.setAttribute("aria-hidden", "true");
+        window.setTimeout(function () {
+          victoryOverlay.style.display = "none";
+          isVictoryOpen = false;
+          processVictoryQueue();
+        }, 250);
+      }
+
+      window.closeVictoryOverlay = closeVictoryOverlay;
+
       function awardMesaTaticaReward() {
         const pendingReward = Number(localStorage.getItem(mesaTaticaRewardStorageKey) || "0");
         if (pendingReward <= 0) {
@@ -242,10 +334,12 @@
             continue;
           }
           unlockSlot(chosenSlot);
+          enqueueVictory(chosenSlot.dataset.stickerId);
           rewardedSlots.push(chosenSlot);
         }
 
         localStorage.setItem(mesaTaticaRewardStorageKey, "0");
+        processVictoryQueue();
 
         if (rewardedSlots.length && activeSlot && rewardedSlots.indexOf(activeSlot) >= 0) {
           closeModal();
@@ -332,7 +426,9 @@
 
         if (answer === expectedAnswer) {
           unlockSlot(activeSlot);
+          enqueueVictory(activeSlot.dataset.stickerId);
           closeModal();
+          processVictoryQueue();
           return;
         }
 
@@ -376,6 +472,10 @@
       window.addEventListener("pageshow", syncUnlockedSlots);
       window.addEventListener("focus", syncUnlockedSlots);
       window.addEventListener("storage", syncUnlockedSlots);
+      if (victoryClose) {
+        victoryClose.addEventListener("click", closeVictoryOverlay);
+      }
+      processVictoryQueue();
     }());
   </script>
 </body>

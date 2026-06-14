@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bafinho Bugrino | Os Invictos</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    .bafinho-page {
+      --bf-green: #0b3a26;
+      --bf-green-2: #155f3a;
+      --bf-gold: #d0ab52;
+      --bf-cream: #f8f1df;
+      --bf-ink: #18211a;
+      min-height: 100vh;
+      color: #fff;
+      background:
+        radial-gradient(circle at top, rgba(255, 235, 190, 0.08), transparent 18%),
+        linear-gradient(180deg, #082417 0%, #0d3f29 55%, #145838 100%);
+      padding: 24px;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .bafinho-shell {
+      max-width: 1260px;
+      margin: 0 auto;
+    }
+
+    .bafinho-hero {
+      background: linear-gradient(135deg, rgba(248, 241, 223, 0.96), rgba(243, 232, 204, 0.92));
+      color: var(--bf-ink);
+      border: 3px solid rgba(208, 171, 82, 0.7);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.28);
+      margin-bottom: 22px;
+    }
+
+    .bafinho-hero__eyebrow {
+      letter-spacing: 0.18rem;
+      text-transform: uppercase;
+      color: #7c6324;
+      font-size: 0.78rem;
+      margin-bottom: 10px;
+    }
+
+    .bafinho-hero h1 {
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 0.95;
+      margin-bottom: 12px;
+      color: #0a301f;
+    }
+
+    .bafinho-hero p {
+      max-width: 760px;
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+
+    .bafinho-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .bafinho-nav a {
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(180deg, #2b8f61, #1f6a48);
+      border-radius: 999px;
+      padding: 11px 18px;
+      font-weight: 700;
+    }
+
+    .bafinho-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .bafinho-stat {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      padding: 18px;
+      backdrop-filter: blur(8px);
+    }
+
+    .bafinho-stat__label {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12rem;
+      opacity: 0.78;
+      margin-bottom: 8px;
+    }
+
+    .bafinho-stat strong {
+      display: block;
+      font-size: 2rem;
+      color: #ffe094;
+    }
+
+    .bafinho-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      gap: 20px;
+    }
+
+    .bafinho-panel {
+      background: rgba(6, 18, 13, 0.32);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(8px);
+    }
+
+    .bafinho-panel h2 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    .bafinho-panel p {
+      color: rgba(255, 255, 255, 0.86);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .sticker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 14px;
+    }
+
+    .sticker-pick {
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      padding: 10px;
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+      color: #fff;
+      text-align: center;
+    }
+
+    .sticker-pick:hover,
+    .sticker-pick:focus-visible {
+      transform: translateY(-3px);
+      border-color: rgba(208, 171, 82, 0.9);
+      background: rgba(255, 255, 255, 0.14);
+      outline: none;
+    }
+
+    .sticker-pick.is-selected {
+      border-color: #ffe094;
+      background: rgba(208, 171, 82, 0.18);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .sticker-pick img {
+      width: 100%;
+      aspect-ratio: 109 / 145;
+      object-fit: cover;
+      border-radius: 14px;
+      display: block;
+      margin-bottom: 8px;
+      background: rgba(255, 255, 255, 0.62);
+    }
+
+    .sticker-pick__name {
+      font-size: 0.94rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .battle-stage {
+      margin-top: 18px;
+      background:
+        radial-gradient(circle at top, rgba(255, 235, 190, 0.14), transparent 24%),
+        linear-gradient(180deg, rgba(30, 110, 68, 0.92), rgba(15, 65, 40, 0.94));
+      border: 2px solid rgba(208, 171, 82, 0.45);
+      border-radius: 30px;
+      padding: 22px;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .pot-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      align-items: center;
+    }
+
+    .pot-card {
+      background: rgba(255, 255, 255, 0.12);
+      border: 2px dashed rgba(255, 255, 255, 0.34);
+      border-radius: 24px;
+      min-height: 244px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .pot-card.is-active {
+      border-color: #ffe094;
+      box-shadow: 0 0 0 4px rgba(255, 224, 148, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .pot-card img {
+      width: min(170px, 100%);
+      aspect-ratio: 109 / 145;
+      object-fit: cover;
+      border-radius: 18px;
+      display: block;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .pot-card__label {
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.12rem;
+      opacity: 0.76;
+      margin-bottom: 10px;
+    }
+
+    .pot-card__name {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .pot-card__placeholder {
+      font-size: 0.96rem;
+      line-height: 1.5;
+      max-width: 210px;
+      color: rgba(255, 255, 255, 0.88);
+    }
+
+    .gesture-zone {
+      margin-top: 18px;
+      border-radius: 22px;
+      border: 2px solid rgba(255, 255, 255, 0.22);
+      background: rgba(4, 16, 11, 0.25);
+      padding: 18px;
+    }
+
+    .gesture-zone h3 {
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+
+    .gesture-hint {
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 0.96rem;
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+
+    .gesture-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .gesture-pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .battle-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .battle-button {
+      width: auto;
+      min-width: 180px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(180deg, #e7bf63, #cb9c3c);
+      color: #18211a;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .battle-button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .battle-log {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 22px;
+      padding: 18px;
+      min-height: 220px;
+    }
+
+    .battle-log__headline {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+
+    .battle-log__status {
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.86);
+      margin-bottom: 14px;
+      min-height: 70px;
+    }
+
+    .battle-log__history {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 220px;
+      overflow: auto;
+      padding-right: 6px;
+    }
+
+    .battle-log__item {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 12px;
+      line-height: 1.4;
+      font-size: 0.92rem;
+    }
+
+    .empty-state {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px dashed rgba(255, 255, 255, 0.25);
+      border-radius: 24px;
+      padding: 28px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 980px) {
+      .bafinho-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .bafinho-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .bafinho-page {
+        padding: 16px;
+      }
+
+      .bafinho-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .pot-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="bafinho-page">
+  <div class="bafinho-shell">
+    <header class="bafinho-hero">
+      <div class="bafinho-hero__eyebrow">Os Invictos | Álbum + duelo de gesto</div>
+      <h1>Bafinho Bugrino</h1>
+      <p>Escolha uma figurinha já conquistada, coloque no pote e enfrente o bot. O bot sempre entra com uma figurinha aleatória. Depois, bata o bafinho com um gesto no pote: <strong>double click and slide</strong> vence todos e <strong>click and slide</strong> vence <strong>double click</strong>.</p>
+      <nav class="bafinho-nav" aria-label="Navegação do jogo">
+        <a href="./index.html">Voltar ao álbum</a>
+        <a href="./missoes.html">Ir para missões</a>
+      </nav>
+    </header>
+
+    <section class="bafinho-stats" aria-label="Ranking local do bafinho">
+      <article class="bafinho-stat">
+        <div class="bafinho-stat__label">Pontos</div>
+        <strong id="ranking-points">0</strong>
+      </article>
+      <article class="bafinho-stat">
+        <div class="bafinho-stat__label">Vitórias</div>
+        <strong id="ranking-wins">0</strong>
+      </article>
+      <article class="bafinho-stat">
+        <div class="bafinho-stat__label">Derrotas</div>
+        <strong id="ranking-losses">0</strong>
+      </article>
+      <article class="bafinho-stat">
+        <div class="bafinho-stat__label">Empates</div>
+        <strong id="ranking-draws">0</strong>
+      </article>
+    </section>
+
+    <div class="bafinho-layout">
+      <section class="bafinho-panel">
+        <h2>Sua coleção para o pote</h2>
+        <p>Somente figurinhas conquistadas no álbum aparecem aqui. Clique em uma para colocá-la no pote e chamar o bot para a rodada.</p>
+        <div id="player-collection"></div>
+      </section>
+
+      <aside class="bafinho-panel">
+        <h2>Pote e disputa</h2>
+        <div class="battle-stage">
+          <div class="pot-row">
+            <article class="pot-card" id="player-pot" data-owner="player">
+              <div class="pot-card__label">Seu pote</div>
+              <div class="pot-card__placeholder">Escolha uma figurinha da sua coleção para começar.</div>
+            </article>
+            <article class="pot-card" id="bot-pot" data-owner="bot">
+              <div class="pot-card__label">Pote do bot</div>
+              <div class="pot-card__placeholder">O bot entra automaticamente com uma figurinha aleatória.</div>
+            </article>
+          </div>
+
+          <div class="gesture-zone" id="gesture-zone">
+            <h3>Bater o bafinho</h3>
+            <p class="gesture-hint">Quando as duas figurinhas estiverem no pote, use um gesto em cima das cartas do pote. Pode ser um clique duplo, clicar em uma carta e deslizar até a outra, ou dar um primeiro clique e, em ate 1 segundo, fazer o segundo clique ja arrastando para a carta rival.</p>
+            <div class="gesture-legend" aria-label="Legenda de gestos">
+              <div class="gesture-pill">`double click and slide` vence todos</div>
+              <div class="gesture-pill">`click and slide` vence `double click`</div>
+              <div class="gesture-pill">`double click` perde para os dois gestos com slide</div>
+            </div>
+            <div class="battle-actions">
+              <button class="battle-button" id="new-round" type="button" disabled>Nova rodada</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="bafinho-panel" style="margin-top:20px;">
+      <h2>Resultado da rodada</h2>
+      <div class="battle-log">
+        <div class="battle-log__headline">Painel do juiz</div>
+        <div class="battle-log__status" id="battle-status">Escolha sua figurinha para o pote. Depois, faça o gesto no confronto para bater o bafinho.</div>
+        <div class="battle-log__history" id="battle-history"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      const rankingStorageKey = "bafinho_bugre_ranking";
+      const albumStoragePrefix = "album_bugre_";
+      const stickers = [
+        { id: "escudo", name: "Escudo", image: "./figurinhas/0-escudo.png" },
+        { id: "elio-sizenando", name: "Élio Sizenando", image: "./figurinhas/ProfessorElio.png" },
+        { id: "caique-franca", name: "Caíque França", image: "./figurinhas/1-caique.png" },
+        { id: "rian", name: "Rian", image: "./figurinhas/2-rian.png" },
+        { id: "jonathan-costa", name: "Jonathan Costa", image: "./figurinhas/4-jonathan.png" },
+        { id: "donato", name: "Donato", image: "./figurinhas/5-donato.png" },
+        { id: "mauricio-antonio", name: "Maurício Antônio", image: "./figurinhas/33-mauricioantonio.png" },
+        { id: "emerson", name: "Emerson", image: "./figurinhas/6-emerson.png" },
+        { id: "raphael", name: "Raphael", image: "./figurinhas/8-raphael.png" },
+        { id: "renan-castro", name: "Renan Castro", image: "./figurinhas/66-renancastro.png" },
+        { id: "willian-farias", name: "Willian Farias", image: "./figurinhas/3-willianfarias.png" },
+        { id: "joao-paulo", name: "João Paulo", image: "./figurinhas/10-joaopauloo.png" },
+        { id: "carlos-eduardo", name: "Carlos Eduardo", image: "./figurinhas/15-carloseduardo.png" },
+        { id: "kaua-jesus", name: "Kauã Jesus", image: "./figurinhas/20-kauajesus.png" },
+        { id: "guilherme-cachoeira", name: "Guilherme Cachoeira", image: "./figurinhas/21-cahoeira.png" },
+        { id: "hebert", name: "Hebert", image: "./figurinhas/11-hebert.png" },
+        { id: "mirandinha", name: "Mirandinha", image: "./figurinhas/23-mirandinha.png" },
+        { id: "kewen", name: "Kewen", image: "./figurinhas/99-kewen.png" }
+      ];
+
+      const rankingNodes = {
+        points: document.getElementById("ranking-points"),
+        wins: document.getElementById("ranking-wins"),
+        losses: document.getElementById("ranking-losses"),
+        draws: document.getElementById("ranking-draws")
+      };
+
+      const collectionRoot = document.getElementById("player-collection");
+      const playerPot = document.getElementById("player-pot");
+      const botPot = document.getElementById("bot-pot");
+      const gestureZone = document.getElementById("gesture-zone");
+      const battleStatus = document.getElementById("battle-status");
+      const battleHistory = document.getElementById("battle-history");
+      const newRoundButton = document.getElementById("new-round");
+
+      let ranking = readRanking();
+      let playerStickers = readUnlockedStickers();
+      let selectedPlayerSticker = null;
+      let botSticker = null;
+      let roundActive = false;
+      let roundResolved = false;
+      let gestureLocked = false;
+      let slideStartOwner = "";
+      let slideTriggered = false;
+      let lastTapOwner = "";
+      let lastTapTime = 0;
+      let doubleSlideArmed = false;
+      const doubleSlideWindowMs = 1000;
+
+      function readRanking() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(rankingStorageKey) || "{}");
+          return {
+            points: Number(parsed.points || 0),
+            wins: Number(parsed.wins || 0),
+            losses: Number(parsed.losses || 0),
+            draws: Number(parsed.draws || 0)
+          };
+        } catch (error) {
+          return { points: 0, wins: 0, losses: 0, draws: 0 };
+        }
+      }
+
+      function writeRanking() {
+        localStorage.setItem(rankingStorageKey, JSON.stringify(ranking));
+      }
+
+      function updateRankingUI() {
+        rankingNodes.points.textContent = String(ranking.points);
+        rankingNodes.wins.textContent = String(ranking.wins);
+        rankingNodes.losses.textContent = String(ranking.losses);
+        rankingNodes.draws.textContent = String(ranking.draws);
+      }
+
+      function readUnlockedStickers() {
+        return stickers.filter(function (sticker) {
+          return localStorage.getItem(albumStoragePrefix + sticker.id) === "unlocked";
+        });
+      }
+
+      function createStickerCard(sticker) {
+        return (
+          '<button class="sticker-pick" type="button" data-sticker-id="' + sticker.id + '">' +
+            '<img src="' + sticker.image + '" alt="' + sticker.name + '">' +
+            '<div class="sticker-pick__name">' + sticker.name + '</div>' +
+          '</button>'
+        );
+      }
+
+      function renderCollection() {
+        playerStickers = readUnlockedStickers();
+        if (!playerStickers.length) {
+          collectionRoot.innerHTML = '<div class="empty-state">Nenhuma figurinha conquistada ainda. Volte ao álbum, complete missões e depois retorne para jogar o bafinho.</div>';
+          return;
+        }
+
+        collectionRoot.innerHTML = '<div class="sticker-grid">' + playerStickers.map(createStickerCard).join("") + '</div>';
+        syncSelectedCardState();
+      }
+
+      function syncSelectedCardState() {
+        collectionRoot.querySelectorAll(".sticker-pick").forEach(function (button) {
+          button.classList.toggle("is-selected", button.dataset.stickerId === (selectedPlayerSticker && selectedPlayerSticker.id));
+        });
+      }
+
+      function chooseBotSticker(playerStickerId) {
+        const pool = stickers.filter(function (sticker) {
+          return sticker.id !== playerStickerId;
+        });
+        return pool[Math.floor(Math.random() * pool.length)] || null;
+      }
+
+      function renderPotCard(container, sticker, label, placeholder) {
+        if (!sticker) {
+          container.innerHTML =
+            '<div class="pot-card__label">' + label + '</div>' +
+            '<div class="pot-card__placeholder">' + placeholder + '</div>';
+          return;
+        }
+
+        container.innerHTML =
+          '<div class="pot-card__label">' + label + '</div>' +
+          '<img src="' + sticker.image + '" alt="' + sticker.name + '">' +
+          '<div class="pot-card__name">' + sticker.name + '</div>';
+      }
+
+      function setStatus(message) {
+        battleStatus.textContent = message;
+      }
+
+      function addHistory(message) {
+        const item = document.createElement("div");
+        item.className = "battle-log__item";
+        item.textContent = message;
+        battleHistory.prepend(item);
+      }
+
+      function startRound(stickerId) {
+        const chosen = playerStickers.find(function (sticker) {
+          return sticker.id === stickerId;
+        });
+
+        if (!chosen) {
+          return;
+        }
+
+        selectedPlayerSticker = chosen;
+        botSticker = chooseBotSticker(chosen.id);
+        roundActive = true;
+        roundResolved = false;
+        gestureLocked = false;
+        slideTriggered = false;
+        doubleSlideArmed = false;
+        renderPotCard(playerPot, chosen, "Seu pote", "");
+        renderPotCard(botPot, botSticker, "Pote do bot", "");
+        playerPot.classList.remove("is-active");
+        botPot.classList.remove("is-active");
+        newRoundButton.disabled = true;
+        syncSelectedCardState();
+        setStatus("As duas figurinhas entraram no pote. Agora faça o gesto: clique duplo, clique e deslize, ou double click and slide com ate 1 segundo entre o primeiro clique e o segundo arraste.");
+        addHistory("Nova rodada: " + chosen.name + " entrou no pote do torcedor e " + (botSticker ? botSticker.name : "o bot") + " entrou no pote rival.");
+      }
+
+      function resetRound() {
+        selectedPlayerSticker = null;
+        botSticker = null;
+        roundActive = false;
+        roundResolved = false;
+        gestureLocked = false;
+        slideTriggered = false;
+        doubleSlideArmed = false;
+        lastTapOwner = "";
+        lastTapTime = 0;
+        playerPot.classList.remove("is-active");
+        botPot.classList.remove("is-active");
+        renderPotCard(playerPot, null, "Seu pote", "Escolha uma figurinha da sua coleção para começar.");
+        renderPotCard(botPot, null, "Pote do bot", "O bot entra automaticamente com uma figurinha aleatória.");
+        syncSelectedCardState();
+        newRoundButton.disabled = true;
+        setStatus("Escolha uma figurinha para começar uma nova disputa.");
+      }
+
+      function randomBotGesture() {
+        const options = ["double-click", "click-and-slide", "double-click-and-slide"];
+        return options[Math.floor(Math.random() * options.length)];
+      }
+
+      function gestureLabel(gesture) {
+        if (gesture === "double-click") return "double click";
+        if (gesture === "double-click-and-slide") return "double click and slide";
+        return "click and slide";
+      }
+
+      function decideRound(playerGesture, botGesture) {
+        if (playerGesture === botGesture) {
+          return "draw";
+        }
+
+        const rank = {
+          "double-click": 0,
+          "click-and-slide": 1,
+          "double-click-and-slide": 2
+        };
+
+        if (rank[playerGesture] > rank[botGesture]) {
+          return "win";
+        }
+
+        if (rank[playerGesture] < rank[botGesture]) {
+          return "loss";
+        }
+
+        return "draw";
+      }
+
+      function applyRanking(result) {
+        if (result === "win") {
+          ranking.points += 3;
+          ranking.wins += 1;
+        } else if (result === "draw") {
+          ranking.points += 1;
+          ranking.draws += 1;
+        } else {
+          ranking.losses += 1;
+        }
+        writeRanking();
+        updateRankingUI();
+      }
+
+      function resolveRound(playerGesture) {
+        if (!roundActive || roundResolved || gestureLocked || !selectedPlayerSticker || !botSticker) {
+          return;
+        }
+
+        gestureLocked = true;
+        roundResolved = true;
+        const botGesture = randomBotGesture();
+        const result = decideRound(playerGesture, botGesture);
+        applyRanking(result);
+
+        const resultText = result === "win"
+          ? "Você venceu a batida."
+          : result === "draw"
+            ? "A batida empatou."
+            : "O bot venceu a batida.";
+
+        setStatus(
+          "Seu gesto foi " + gestureLabel(playerGesture) +
+          ", o do bot foi " + gestureLabel(botGesture) +
+          ". " + resultText
+        );
+        addHistory(
+          selectedPlayerSticker.name + " x " + botSticker.name +
+          " | torcedor: " + gestureLabel(playerGesture) +
+          " | bot: " + gestureLabel(botGesture) +
+          " | resultado: " + (result === "win" ? "vitória" : result === "draw" ? "empate" : "derrota")
+        );
+        newRoundButton.disabled = false;
+      }
+
+      function activatePot(owner) {
+        playerPot.classList.toggle("is-active", owner === "player");
+        botPot.classList.toggle("is-active", owner === "bot");
+      }
+
+      collectionRoot.addEventListener("click", function (event) {
+        const button = event.target.closest(".sticker-pick");
+        if (!button) {
+          return;
+        }
+        startRound(button.dataset.stickerId);
+      });
+
+      [playerPot, botPot].forEach(function (pot) {
+        pot.addEventListener("click", function () {
+          activatePot(pot.dataset.owner);
+        });
+
+        pot.addEventListener("dblclick", function (event) {
+          event.preventDefault();
+          activatePot(pot.dataset.owner);
+          slideTriggered = true;
+          resolveRound("double-click");
+        });
+
+        pot.addEventListener("pointerdown", function () {
+          if (!roundActive || roundResolved) {
+            return;
+          }
+
+          const now = Date.now();
+          if (lastTapOwner === pot.dataset.owner && now - lastTapTime <= doubleSlideWindowMs) {
+            doubleSlideArmed = true;
+          } else {
+            doubleSlideArmed = false;
+          }
+          lastTapOwner = pot.dataset.owner;
+          lastTapTime = now;
+          slideStartOwner = pot.dataset.owner;
+          activatePot(slideStartOwner);
+        });
+
+        pot.addEventListener("pointerenter", function (event) {
+          if (!roundActive || roundResolved || !slideStartOwner) {
+            return;
+          }
+          if (slideStartOwner !== pot.dataset.owner && event.buttons > 0) {
+            slideTriggered = true;
+            resolveRound(doubleSlideArmed ? "double-click-and-slide" : "click-and-slide");
+          }
+        });
+
+        pot.addEventListener("pointerup", function () {
+          slideStartOwner = "";
+          window.setTimeout(function () {
+            doubleSlideArmed = false;
+          }, doubleSlideWindowMs);
+          window.setTimeout(function () {
+            slideTriggered = false;
+          }, 40);
+        });
+      });
+
+      document.addEventListener("pointerup", function () {
+        slideStartOwner = "";
+      });
+
+      newRoundButton.addEventListener("click", function () {
+        resetRound();
+      });
+
+      updateRankingUI();
+      renderCollection();
+      resetRound();
+    }());
+  </script>
+</body>
+</html>

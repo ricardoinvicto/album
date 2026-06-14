@@ -4,6 +4,7 @@
   const tacticsStateStorageKey = 'ctvirtual_tactics_state';
   const mesaTaticaRewardStorageKey = 'ctvirtual_reward_mesa_tatica_pending';
   const mesaTaticaCompletionKey = 'ctvirtual_mesa_tatica_completed';
+  const victoryQueueStorageKey = 'album_pending_victory_queue';
   const searchParams = new URLSearchParams(window.location.search);
   const returnTo = searchParams.get('returnTo') || '../index.html';
   const mission = searchParams.get('mission') || '';
@@ -98,6 +99,25 @@
     }
   }
 
+  function enqueueVictory(stickerId) {
+    if (!stickerId) {
+      return;
+    }
+
+    let queue = [];
+    try {
+      const parsed = JSON.parse(localStorage.getItem(victoryQueueStorageKey) || '[]');
+      queue = Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      queue = [];
+    }
+
+    if (queue.indexOf(stickerId) === -1) {
+      queue.push(stickerId);
+      localStorage.setItem(victoryQueueStorageKey, JSON.stringify(queue));
+    }
+  }
+
   async function shareImage() {
     button.disabled = true;
     button.textContent = 'Gerando imagem...';
@@ -118,6 +138,7 @@
       URL.revokeObjectURL(imageUrl);
 
       localStorage.setItem(sharedTeamStorageKey, 'unlocked');
+      enqueueVictory('elio-sizenando');
       if (mission === 'mesa-tatica') {
         const tacticsState = readTacticsState();
         const completedMesaTatica = tacticsState.formation === '4-4-2' && tacticsState.phase === 'sem-posse';
