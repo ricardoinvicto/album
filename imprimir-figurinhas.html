@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imprimir Figurinhas | Os Invictos</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    .print-page {
+      --print-green: #103826;
+      --print-green-2: #1f6a48;
+      --print-gold: #c7a34a;
+      --print-paper: #fbf6eb;
+      --print-ink: #1d261f;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(255, 235, 189, 0.18), transparent 20%),
+        linear-gradient(180deg, #0a2419 0%, #13472f 54%, #1b5b3c 100%);
+      color: #fff;
+      padding: 24px;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .print-shell {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .print-hero,
+    .print-panel {
+      background: linear-gradient(135deg, rgba(255, 248, 227, 0.96), rgba(244, 236, 216, 0.92));
+      color: var(--print-ink);
+      border: 3px solid rgba(199, 163, 74, 0.7);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 20px 50px rgba(10, 24, 18, 0.22);
+    }
+
+    .print-hero {
+      margin-bottom: 22px;
+    }
+
+    .print-eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 0.18rem;
+      text-transform: uppercase;
+      color: #8c6d24;
+      margin-bottom: 10px;
+    }
+
+    .print-hero h1 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 0.95;
+      color: var(--print-green);
+      margin-bottom: 12px;
+    }
+
+    .print-hero p {
+      max-width: 760px;
+      line-height: 1.55;
+      font-size: 1rem;
+    }
+
+    .print-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .print-nav a {
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(180deg, #2b8f61, #1f6a48);
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 700;
+    }
+
+    .print-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 20px;
+    }
+
+    .print-panel h2 {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+      color: var(--print-green);
+    }
+
+    .print-panel p {
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+
+    .print-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+      gap: 14px;
+    }
+
+    .print-card {
+      background: rgba(255, 255, 255, 0.74);
+      border: 2px solid rgba(31, 106, 72, 0.14);
+      border-radius: 18px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .print-card img {
+      width: 100%;
+      aspect-ratio: 109 / 145;
+      object-fit: cover;
+      border-radius: 12px;
+      display: block;
+      background: rgba(255, 255, 255, 0.92);
+      margin-bottom: 8px;
+    }
+
+    .print-card__name {
+      font-size: 0.92rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .print-empty {
+      border: 2px dashed rgba(31, 106, 72, 0.28);
+      border-radius: 20px;
+      padding: 28px;
+      text-align: center;
+      color: rgba(29, 38, 31, 0.8);
+      background: rgba(255, 255, 255, 0.44);
+    }
+
+    .print-form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .print-form label {
+      font-weight: 700;
+      color: var(--print-green);
+    }
+
+    .print-form input,
+    .print-form textarea {
+      width: 100%;
+      border: 2px solid rgba(31, 106, 72, 0.18);
+      border-radius: 16px;
+      padding: 14px 16px;
+      font: inherit;
+      color: var(--print-ink);
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .print-form textarea {
+      min-height: 220px;
+      resize: vertical;
+    }
+
+    .print-button {
+      border: none;
+      background: linear-gradient(180deg, #2b8f61, #1f6a48);
+      color: #fff;
+      padding: 14px 18px;
+      border-radius: 999px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .print-note {
+      font-size: 0.92rem;
+      color: rgba(29, 38, 31, 0.76);
+      line-height: 1.45;
+    }
+
+    @media (max-width: 960px) {
+      .print-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .print-page {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body class="print-page">
+  <div class="print-shell">
+    <header class="print-hero">
+      <div class="print-eyebrow">Os Invictos | Álbum para impressão</div>
+      <h1>Imprimir Figurinhas</h1>
+      <p>Veja suas figurinhas conquistadas e envie a lista por e-mail para solicitar impressão. A página monta automaticamente o conteúdo com base no seu álbum atual.</p>
+      <nav class="print-nav" aria-label="Navegação da impressão">
+        <a href="./index.html">Voltar ao álbum</a>
+        <a href="./bafinho.html">Jogar Bafinho</a>
+      </nav>
+    </header>
+
+    <div class="print-layout">
+      <section class="print-panel">
+        <h2>Figurinhas conquistadas</h2>
+        <p>As figurinhas abaixo refletem o estado atual do álbum neste dispositivo.</p>
+        <div id="print-collection"></div>
+      </section>
+
+      <aside class="print-panel">
+        <h2>Enviar pedido</h2>
+        <p>Preencha seu nome e abra o e-mail com a lista pronta para enviar a <strong>ricardo@invicto.ind.br</strong>.</p>
+        <form class="print-form" id="print-request-form">
+          <div>
+            <label for="requester-name">Seu nome</label>
+            <input id="requester-name" name="requester_name" type="text" placeholder="Digite seu nome">
+          </div>
+          <div>
+            <label for="request-stickers">Lista de figurinhas</label>
+            <textarea id="request-stickers" name="request_stickers" readonly></textarea>
+          </div>
+          <button class="print-button" type="submit">Enviar para ricardo@invicto.ind.br</button>
+          <p class="print-note">Sem backend, o envio abre o aplicativo de e-mail do aparelho com o assunto e a lista preenchidos. Se o aparelho não tiver cliente de e-mail configurado, nada será enviado automaticamente.</p>
+        </form>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const storagePrefix = "album_bugre_";
+      const removedStorageKey = "album_bafinho_removed";
+      const stickers = [
+        { id: "escudo", name: "Escudo", image: "./figurinhas/0-escudo.png" },
+        { id: "elio-sizenando", name: "Élio Sizenando", image: "./figurinhas/ProfessorElio.png" },
+        { id: "caique-franca", name: "Caíque França", image: "./figurinhas/1-caique.png" },
+        { id: "rian", name: "Rian", image: "./figurinhas/2-rian.png" },
+        { id: "jonathan-costa", name: "Jonathan Costa", image: "./figurinhas/4-jonathan.png" },
+        { id: "donato", name: "Donato", image: "./figurinhas/5-donato.png" },
+        { id: "mauricio-antonio", name: "Maurício Antônio", image: "./figurinhas/33-mauricioantonio.png" },
+        { id: "emerson", name: "Emerson", image: "./figurinhas/6-emerson.png" },
+        { id: "raphael", name: "Raphael", image: "./figurinhas/8-raphael.png" },
+        { id: "renan-castro", name: "Renan Castro", image: "./figurinhas/66-renancastro.png" },
+        { id: "willian-farias", name: "Willian Farias", image: "./figurinhas/3-willianfarias.png" },
+        { id: "joao-paulo", name: "João Paulo", image: "./figurinhas/10-joaopauloo.png" },
+        { id: "carlos-eduardo", name: "Carlos Eduardo", image: "./figurinhas/15-carloseduardo.png" },
+        { id: "kaua-jesus", name: "Kauã Jesus", image: "./figurinhas/20-kauajesus.png" },
+        { id: "guilherme-cachoeira", name: "Guilherme Cachoeira", image: "./figurinhas/21-cahoeira.png" },
+        { id: "hebert", name: "Hebert", image: "./figurinhas/11-hebert.png" },
+        { id: "mirandinha", name: "Mirandinha", image: "./figurinhas/23-mirandinha.png" },
+        { id: "kewen", name: "Kewen", image: "./figurinhas/99-kewen.png" }
+      ];
+
+      const collectionRoot = document.getElementById("print-collection");
+      const requesterNameInput = document.getElementById("requester-name");
+      const stickersTextarea = document.getElementById("request-stickers");
+      const form = document.getElementById("print-request-form");
+
+      function readRemovedStickers() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(removedStorageKey) || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function readUnlockedStickers() {
+        const removed = readRemovedStickers();
+        return stickers.filter(function (sticker) {
+          return localStorage.getItem(storagePrefix + sticker.id) === "unlocked" &&
+            removed.indexOf(sticker.id) === -1;
+        });
+      }
+
+      function renderCollection(unlocked) {
+        if (!unlocked.length) {
+          collectionRoot.innerHTML = '<div class="print-empty">Nenhuma figurinha conquistada ainda. Complete missões, ganhe no bafinho ou volte mais tarde para montar seu pedido.</div>';
+          return;
+        }
+
+        collectionRoot.innerHTML = '<div class="print-grid">' + unlocked.map(function (sticker) {
+          return (
+            '<article class="print-card">' +
+              '<img src="' + sticker.image + '" alt="' + sticker.name + '">' +
+              '<div class="print-card__name">' + sticker.name + '</div>' +
+            '</article>'
+          );
+        }).join("") + '</div>';
+      }
+
+      function buildStickerList(unlocked) {
+        if (!unlocked.length) {
+          return "Nenhuma figurinha conquistada no momento.";
+        }
+
+        return unlocked.map(function (sticker, index) {
+          return (index + 1) + ". " + sticker.name;
+        }).join("\n");
+      }
+
+      function openMailClient(event) {
+        event.preventDefault();
+        const unlocked = readUnlockedStickers();
+        const requesterName = requesterNameInput.value.trim() || "Torcedor bugrino";
+        const body = [
+          "Nome: " + requesterName,
+          "",
+          "Figurinhas conquistadas:",
+          buildStickerList(unlocked)
+        ].join("\n");
+        const subject = "Pedido de impressao de figurinhas";
+        window.location.href = "mailto:ricardo@invicto.ind.br?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+      }
+
+      const unlocked = readUnlockedStickers();
+      renderCollection(unlocked);
+      stickersTextarea.value = buildStickerList(unlocked);
+      form.addEventListener("submit", openMailClient);
+    }());
+  </script>
+</body>
+</html>
