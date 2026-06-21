@@ -351,6 +351,70 @@
       line-height: 1.6;
     }
 
+    .bafinho-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(4, 16, 11, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.22s ease;
+    }
+
+    .bafinho-overlay.is-open {
+      opacity: 1;
+    }
+
+    .bafinho-overlay__card {
+      width: min(360px, 100%);
+      background: linear-gradient(180deg, rgba(248, 241, 223, 0.98), rgba(243, 232, 204, 0.94));
+      color: var(--bf-ink);
+      border: 3px solid rgba(208, 171, 82, 0.84);
+      border-radius: 28px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    .bafinho-overlay__eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.14rem;
+      font-size: 0.76rem;
+      color: #7c6324;
+      margin-bottom: 10px;
+    }
+
+    .bafinho-overlay__image {
+      width: min(220px, 100%);
+      aspect-ratio: 109 / 145;
+      object-fit: cover;
+      border-radius: 18px;
+      display: block;
+      margin: 0 auto 16px;
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: 0 16px 28px rgba(0, 0, 0, 0.18);
+    }
+
+    .bafinho-overlay__title {
+      font-size: 1.5rem;
+      line-height: 1.05;
+      margin-bottom: 10px;
+    }
+
+    .bafinho-overlay__text {
+      line-height: 1.45;
+      margin-bottom: 18px;
+    }
+
+    .bafinho-overlay__button {
+      width: auto;
+      min-width: 120px;
+    }
+
     @media (max-width: 980px) {
       .bafinho-stats {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -437,7 +501,7 @@
               <div class="gesture-pill">`double click` perde para os dois gestos com slide</div>
             </div>
             <div class="battle-actions">
-              <button class="battle-button" id="new-round" type="button" disabled>Nova rodada</button>
+              <button class="battle-button" id="new-round" type="button" disabled hidden>Nova rodada</button>
             </div>
           </div>
         </div>
@@ -454,10 +518,22 @@
     </section>
   </div>
 
+  <div class="bafinho-overlay" id="battle-overlay" aria-hidden="true">
+    <div class="bafinho-overlay__card">
+      <div class="bafinho-overlay__eyebrow">Resultado do Bafinho</div>
+      <img class="bafinho-overlay__image" id="battle-overlay-image" src="" alt="">
+      <h2 class="bafinho-overlay__title" id="battle-overlay-title"></h2>
+      <p class="bafinho-overlay__text" id="battle-overlay-text"></p>
+      <button class="battle-button bafinho-overlay__button" id="battle-overlay-close" type="button">OK</button>
+    </div>
+  </div>
+
   <script>
     (function () {
       const rankingStorageKey = "bafinho_bugre_ranking";
       const albumStoragePrefix = "album_bugre_";
+      const bafinhoRemovedStorageKey = "album_bafinho_removed";
+      const victoryQueueStorageKey = "album_pending_victory_queue";
       const stickers = [
         { id: "escudo", name: "Escudo", image: "./figurinhas/0-escudo.png" },
         { id: "elio-sizenando", name: "Élio Sizenando", image: "./figurinhas/ProfessorElio.png" },
@@ -493,6 +569,11 @@
       const battleStatus = document.getElementById("battle-status");
       const battleHistory = document.getElementById("battle-history");
       const newRoundButton = document.getElementById("new-round");
+      const battleOverlay = document.getElementById("battle-overlay");
+      const battleOverlayImage = document.getElementById("battle-overlay-image");
+      const battleOverlayTitle = document.getElementById("battle-overlay-title");
+      const battleOverlayText = document.getElementById("battle-overlay-text");
+      const battleOverlayClose = document.getElementById("battle-overlay-close");
 
       let ranking = readRanking();
       let playerStickers = readUnlockedStickers();
@@ -507,6 +588,115 @@
       let lastTapTime = 0;
       let doubleSlideArmed = false;
       const doubleSlideWindowMs = 1000;
+
+      function readRemovedStickers() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(bafinhoRemovedStorageKey) || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function writeRemovedStickers(removed) {
+        localStorage.setItem(bafinhoRemovedStorageKey, JSON.stringify(removed));
+      }
+
+      function markStickerAsOwned(stickerId) {
+        const removed = readRemovedStickers().filter(function (id) {
+          return id !== stickerId;
+        });
+        writeRemovedStickers(removed);
+        localStorage.setItem(albumStoragePrefix + stickerId, "unlocked");
+        enqueueAlbumOverlay(stickerId, "win");
+      }
+
+      function markStickerAsLost(stickerId) {
+        if (!stickerId) {
+          return;
+        }
+
+        const removed = readRemovedStickers();
+        if (removed.indexOf(stickerId) === -1) {
+          removed.push(stickerId);
+          writeRemovedStickers(removed);
+        }
+        localStorage.removeItem(albumStoragePrefix + stickerId);
+        enqueueAlbumOverlay(stickerId, "loss");
+      }
+
+      function enqueueAlbumOverlay(stickerId, mode) {
+        if (!stickerId) {
+          return;
+        }
+
+        let queue = [];
+        try {
+          const parsed = JSON.parse(localStorage.getItem(victoryQueueStorageKey) || "[]");
+          queue = Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          queue = [];
+        }
+
+        const filteredQueue = queue.filter(function (entry) {
+          if (typeof entry === "string") {
+            return entry !== stickerId;
+          }
+          return entry && entry.stickerId !== stickerId;
+        });
+
+        filteredQueue.push({
+          stickerId: stickerId,
+          mode: mode || "win"
+        });
+        localStorage.setItem(victoryQueueStorageKey, JSON.stringify(filteredQueue));
+      }
+
+      function isStickerOwned(stickerId) {
+        return localStorage.getItem(albumStoragePrefix + stickerId) === "unlocked" &&
+          readRemovedStickers().indexOf(stickerId) === -1;
+      }
+
+      function openBattleOverlay(mode, sticker) {
+        if (!battleOverlay) {
+          return;
+        }
+
+        if (mode === "draw") {
+          battleOverlayImage.src = selectedPlayerSticker ? selectedPlayerSticker.image : "";
+          battleOverlayImage.alt = selectedPlayerSticker ? selectedPlayerSticker.name : "";
+          battleOverlayTitle.textContent = "Empate no monte";
+          battleOverlayText.textContent = "Ninguem virou o monte! Jogue outra vez.";
+        } else {
+          if (!sticker) {
+            return;
+          }
+          battleOverlayImage.src = sticker.image;
+          battleOverlayImage.alt = sticker.name;
+          battleOverlayTitle.textContent = mode === "win" ? "Figurinha conquistada" : "Figurinha perdida";
+          battleOverlayText.textContent = mode === "win"
+            ? "Voce ganhou " + sticker.name + " no bafinho e a figurinha ja foi adicionada ao album."
+            : "Voce perdeu " + sticker.name + " no bafinho e a figurinha foi retirada do album.";
+        }
+        battleOverlay.style.display = "flex";
+        battleOverlay.setAttribute("aria-hidden", "false");
+        window.requestAnimationFrame(function () {
+          battleOverlay.classList.add("is-open");
+        });
+      }
+
+      function closeBattleOverlay() {
+        if (!battleOverlay) {
+          return;
+        }
+
+        battleOverlay.classList.remove("is-open");
+        battleOverlay.setAttribute("aria-hidden", "true");
+        window.setTimeout(function () {
+          battleOverlay.style.display = "none";
+          resetRound();
+        }, 220);
+      }
 
       function readRanking() {
         try {
@@ -535,7 +725,7 @@
 
       function readUnlockedStickers() {
         return stickers.filter(function (sticker) {
-          return localStorage.getItem(albumStoragePrefix + sticker.id) === "unlocked";
+          return isStickerOwned(sticker.id);
         });
       }
 
@@ -566,10 +756,17 @@
       }
 
       function chooseBotSticker(playerStickerId) {
-        const pool = stickers.filter(function (sticker) {
+        const preferredPool = stickers.filter(function (sticker) {
+          return sticker.id !== playerStickerId && !isStickerOwned(sticker.id);
+        });
+        if (preferredPool.length) {
+          return preferredPool[Math.floor(Math.random() * preferredPool.length)] || null;
+        }
+
+        const fallbackPool = stickers.filter(function (sticker) {
           return sticker.id !== playerStickerId;
         });
-        return pool[Math.floor(Math.random() * pool.length)] || null;
+        return fallbackPool[Math.floor(Math.random() * fallbackPool.length)] || null;
       }
 
       function renderPotCard(container, sticker, label, placeholder) {
@@ -689,6 +886,19 @@
         updateRankingUI();
       }
 
+      function applyAlbumConsequence(result) {
+        if (result === "win" && botSticker) {
+          markStickerAsOwned(botSticker.id);
+          openBattleOverlay("win", botSticker);
+          return;
+        }
+
+        if (result === "loss" && selectedPlayerSticker) {
+          markStickerAsLost(selectedPlayerSticker.id);
+          openBattleOverlay("loss", selectedPlayerSticker);
+        }
+      }
+
       function resolveRound(playerGesture) {
         if (!roundActive || roundResolved || gestureLocked || !selectedPlayerSticker || !botSticker) {
           return;
@@ -699,6 +909,7 @@
         const botGesture = randomBotGesture();
         const result = decideRound(playerGesture, botGesture);
         applyRanking(result);
+        applyAlbumConsequence(result);
 
         const resultText = result === "win"
           ? "Você venceu a batida."
@@ -717,6 +928,13 @@
           " | bot: " + gestureLabel(botGesture) +
           " | resultado: " + (result === "win" ? "vitória" : result === "draw" ? "empate" : "derrota")
         );
+        renderCollection();
+
+        if (result === "draw") {
+          openBattleOverlay("draw");
+          return;
+        }
+
         newRoundButton.disabled = false;
       }
 
@@ -790,6 +1008,10 @@
       newRoundButton.addEventListener("click", function () {
         resetRound();
       });
+
+      if (battleOverlayClose) {
+        battleOverlayClose.addEventListener("click", closeBattleOverlay);
+      }
 
       updateRankingUI();
       renderCollection();

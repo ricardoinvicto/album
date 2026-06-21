@@ -195,6 +195,7 @@
       const storagePrefix = "album_bugre_";
       const mesaTaticaRewardStorageKey = "ctvirtual_reward_mesa_tatica_pending";
       const victoryQueueStorageKey = "album_pending_victory_queue";
+      const bafinhoRemovedStorageKey = "album_bafinho_removed";
       const slots = Array.from(document.querySelectorAll(".slot-actionable"));
       const modal = document.getElementById("missao-modal");
       const eyebrow = document.getElementById("missao-eyebrow");
@@ -214,6 +215,19 @@
         return storagePrefix + slot.dataset.stickerId;
       }
 
+      function readRemovedStickers() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(bafinhoRemovedStorageKey) || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function isRemovedByBafinho(slot) {
+        return readRemovedStickers().indexOf(slot.dataset.stickerId) >= 0;
+      }
+
       function readVictoryQueue() {
         try {
           const parsed = JSON.parse(localStorage.getItem(victoryQueueStorageKey) || "[]");
@@ -227,16 +241,23 @@
         localStorage.setItem(victoryQueueStorageKey, JSON.stringify(queue));
       }
 
-      function enqueueVictory(stickerId) {
+      function enqueueVictory(stickerId, mode) {
         if (!stickerId) {
           return;
         }
 
         const queue = readVictoryQueue();
-        if (queue.indexOf(stickerId) === -1) {
-          queue.push(stickerId);
-          writeVictoryQueue(queue);
-        }
+        const filteredQueue = queue.filter(function (entry) {
+          if (typeof entry === "string") {
+            return entry !== stickerId;
+          }
+          return entry && entry.stickerId !== stickerId;
+        });
+        filteredQueue.push({
+          stickerId: stickerId,
+          mode: mode || "win"
+        });
+        writeVictoryQueue(filteredQueue);
       }
 
       function findSlotByStickerId(stickerId) {
@@ -250,10 +271,18 @@
           return false;
         }
 
+        if (isRemovedByBafinho(slot)) {
+          return false;
+        }
+
         return localStorage.getItem(slot.dataset.unlockKey || "") === "unlocked";
       }
 
       function isSlotUnlocked(slot) {
+        if (isRemovedByBafinho(slot)) {
+          return false;
+        }
+
         return localStorage.getItem(storageKeyFor(slot)) === "unlocked" || isExternallyUnlocked(slot);
       }
 
@@ -266,7 +295,15 @@
         localStorage.setItem(storageKeyFor(slot), "unlocked");
       }
 
-      function showVictoryOverlay(slot) {
+      function lockSlot(slot) {
+        const frame = slot.querySelector(".sticker-frame");
+        slot.classList.add("empty");
+        slot.classList.remove("completed");
+        slot.removeAttribute("aria-disabled");
+        frame.innerHTML = "";
+      }
+
+      function showVictoryOverlay(slot, mode) {
         if (!slot || !victoryOverlay || !victoryImage || !victoryText) {
           return;
         }
@@ -274,7 +311,9 @@
         isVictoryOpen = true;
         victoryImage.src = slot.dataset.image;
         victoryImage.alt = slot.dataset.alt;
-        victoryText.textContent = "Figurinha conquistada: " + slot.querySelector(".slot-name").textContent;
+        victoryText.textContent = mode === "loss"
+          ? "Figurinha perdida: " + slot.querySelector(".slot-name").textContent
+          : "Figurinha conquistada: " + slot.querySelector(".slot-name").textContent;
         victoryOverlay.style.display = "flex";
         victoryOverlay.setAttribute("aria-hidden", "false");
         window.requestAnimationFrame(function () {
@@ -292,9 +331,13 @@
           return;
         }
 
-        const stickerId = queue.shift();
+        const entry = queue.shift();
         writeVictoryQueue(queue);
-        showVictoryOverlay(findSlotByStickerId(stickerId));
+        if (typeof entry === "string") {
+          showVictoryOverlay(findSlotByStickerId(entry), "win");
+          return;
+        }
+        showVictoryOverlay(findSlotByStickerId(entry && entry.stickerId), entry && entry.mode);
       }
 
       function closeVictoryOverlay() {
@@ -334,7 +377,7 @@
             continue;
           }
           unlockSlot(chosenSlot);
-          enqueueVictory(chosenSlot.dataset.stickerId);
+          enqueueVictory(chosenSlot.dataset.stickerId, "win");
           rewardedSlots.push(chosenSlot);
         }
 
@@ -350,11 +393,18 @@
         awardMesaTaticaReward();
 
         slots.forEach(function (slot) {
+          const unlocked = isSlotUnlocked(slot);
+
+          if (slot.classList.contains("completed") && !unlocked) {
+            lockSlot(slot);
+            return;
+          }
+
           if (slot.classList.contains("completed")) {
             return;
           }
 
-          if (isSlotUnlocked(slot)) {
+          if (unlocked) {
             unlockSlot(slot);
             if (activeSlot === slot) {
               closeModal();
@@ -426,7 +476,7 @@
 
         if (answer === expectedAnswer) {
           unlockSlot(activeSlot);
-          enqueueVictory(activeSlot.dataset.stickerId);
+          enqueueVictory(activeSlot.dataset.stickerId, "win");
           closeModal();
           processVictoryQueue();
           return;
